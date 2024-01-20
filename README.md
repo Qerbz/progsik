@@ -1,6 +1,5 @@
 # SafePlay
-Security application for TDT4237 Spring 2024.
-<!-- Security application for TDT4237 Spring 2023. Make sure to read this whole file before starting to work with the application. This document contains the following instructions:
+Security application for TDT4237 Spring 2024. Make sure to read this whole file before starting to work with the application. This document contains the following instructions:
 
 - Prerequisites
 - Gitlab authentication
@@ -11,7 +10,7 @@ Security application for TDT4237 Spring 2024.
 
 ## Notice
 
-The application will run on the port defined in .env. The port is a combination of $PORT_PREFIX + $GROUP_ID. For the default configuration of the main repository the application will run on http://localhost:21190.
+The application will run on the port defined in .env. The port is a combination of $PORT_PREFIX + $GROUP_ID. For the default configuration of the main repository the application will run on http://localhost:21250.
 
 ---
 
@@ -29,31 +28,31 @@ The following must be installed before running this application.
 
 ## Gitlab authentication
 
-Gitlab relies on a few security features to be able to use their system. First, one must be connected to NTNU's VPN to perform Git interactions with the project. One thing is that it doesn't rely on password authentication when interacting using Git. Therefore one must set up SSH keys or use access tokens. 
+Gitlab relies on a few security features to be able to use their system. First, one must be connected to NTNU's VPN to perform Git interactions with the project. One thing is that it doesn't rely on password authentication when interacting using Git. Therefore, one must set up SSH keys or use access tokens. 
 
 - [Alternative 1: Clone with SSH keys](https://gitlab.stud.idi.ntnu.no/-/profile/keys)
 
-`git clone git@gitlab.stud.idi.ntnu.no:tdt4237/2023/securehelp.git`
+`git clone git@gitlab.stud.idi.ntnu.no:tdt4237/2024/safeplay.git`
 
 - [Alternative 2: Clone with personal access tokens](https://gitlab.stud.idi.ntnu.no/-/profile/personal_access_tokens)
 
-`git clone https://gitlab.stud.idi.ntnu.no/tdt4237/2023/securehelp.git`
+`git clone https://gitlab.stud.idi.ntnu.no/tdt4237/2024/safeplay.git`
 
 Provide username and your personal access token as password when prompted. Alternatively insert YOUR-ACCESS-TOKEN in the URL as shown below.
 
-`git clone https://oauth2:<YOUR-ACCESS-TOKEN> @gitlab.stud.idi.ntnu.no/tdt4237/2023/securehelp.git`
+`git clone https://oauth2:<YOUR-ACCESS-TOKEN> @gitlab.stud.idi.ntnu.no/tdt4237/2024/safeplay.git`
 
 You should now have the directory locally and can enter it before continuing.
 
-`cd securehelp`
+`cd safeplay`
 
 ---
 
 ## Running the code
 
-In this section three different ways of running the code will be presented. There are mainly two different ways of running the code; 1) With Docker 2) Without Docker. Your code will always be evaluated when running with Docker, and we strictly require that the application in fact runs in production mode to be accepted. This criteria has led to some frustration as students had to choose between building the production images everytime they want to test the code or rely on local development without Docker. 
+In this section three different ways of running the code will be presented. There are mainly two different ways of running the code; 1) With Docker 2) Without Docker. Your code will always be evaluated when running with Docker, and we strictly require that the application in fact runs in production mode to be accepted. This criterion has led to some frustration as students had to choose between building the production images every time they want to test the code or rely on local development without Docker. 
 
-The first method is slow and the second method can be tricky and inconsistent with the production build. Therefore we introduce a third method this year: Running development mode with Docker. It is recommended to use development with Docker to make changes to the application, and Docker production when delivering the code. One may still perform local development without Docker, but one would want to stick to one of the development methods.
+The first method is slow, and the second method can be tricky and inconsistent with the production build. Therefore, we introduce a third method: Running development mode with Docker. It is recommended to use development with Docker to make changes to the application, and Docker production when delivering the code. One may still perform local development without Docker, but one would want to stick to one of the development methods.
 
 ---
 
@@ -65,9 +64,9 @@ Running Docker in development mode allows Docker to automatically refresh whenev
 
 The application will now run on: http://localhost:21XXX/ (XXX = GroupID, e.g., http://localhost:21042/).
 
-The containers will automatically refresh if changes are made in /backend, /frontend/src or /nginx/nginx.conf. Both Django and Node runs in development mode, this means that they automatically detect changes and compile the code on the fly. Meaning that there is no need to restart the containers when making changes in these directorties.
+The containers will automatically refresh if changes are made in /backend, /frontend/src or /nginx/nginx.conf. Both Django and Node runs in development mode, this means that they automatically detect changes and compile the code on the fly. Meaning that there is no need to restart the containers when making changes in these directories.
 
-However, the NGINX gateway container does not have functionality to automatically reload the configuration. This is how you should reload the NGINX configuration without restarting the containers. First your containers must be running and you can enter the gateway using Docker:
+However, the NGINX gateway container does not have functionality to automatically reload the configuration. This is how you should reload the NGINX configuration without restarting the containers. First your containers must be running, and you can enter the gateway using Docker:
 
 - `docker exec -it gateway_group_<GROUP_ID> bash`
 
@@ -85,7 +84,7 @@ The following sections describe how to run the application with Docker and Gitla
 
 - `docker-compose up --build`
 
-This might take a little while, and the frontend build takes additional time, a minute or so. If the page shows "502 Bad Gateway", then one must wait untill docker completes "Creating an optimized production build...". This also holds when deploying with Gitlab Runner. The application will eventually run on http://localhost:21XXX/ (XXX = GroupID).
+This might take a little while, and the frontend build takes additional time, a minute or so. If the page shows "502 Bad Gateway", then one must wait until docker completes "Creating an optimized production build...". This also holds when deploying with Gitlab Runner. The application will eventually run on http://localhost:21XXX/ (XXX = GroupID).
 
 #### **Gitlab Runner (CODE DELIVERY)**
 
@@ -96,13 +95,13 @@ The repository is configured such that changes pushed to the "production" branch
 - `git push origin production`
 - Go to "CI/CD" and "pipelines" within this Gitlab repository to monitor deployment.
 
-This will at least take a few minutes, or up to around 10 minutes if there are several groups deploying at once. If the panel shows that the job is "pending", then that is because the runners are in use by different groups and you will have to wait untill they are complete before the job starts. There are 10 runners in total. Meaning that only 10 groups can execute a job simultaneously. Therefore, one should only push to production when the code has already been tested locally.
+This will at least take a few minutes, or up to around 10 minutes if there are several groups deploying at once. If the panel shows that the job is "pending", then that is because the runners are in use by different groups, and you will have to wait until they are complete before the job starts. There are 10 runners in total. Meaning that only 10 groups can execute a job simultaneously. Therefore, one should only push to production when the code has already been tested locally.
 
 ---
 
 ### Development without Docker (optional)
 
-The following sections describe how one should run the backend and frontend code for development purposes. This should not be necessary if you are comfortable with using Docker in development mode.
+The following sections describe how one should run the backend and frontend code for development purposes. This should not be necessary if you are comfortable using Docker in development mode.
 
 #### **Backend**
 
@@ -124,7 +123,7 @@ To run the backend server, run the following commands:
 
 The instance will be running at http://localhost:8000/ and code changes should update the running code automatically when saving.
 
-After installing once, you only need to run the `python manage.py runserver` command to start the django server.
+After installing once, you only need to run the `python manage.py runserver` command to start the Django server.
 
 Admin users can be created with
 
@@ -140,7 +139,7 @@ To run the frontend server, run the following commands:
 - `npm ci`
 - `npm start`
 
-After installing once, you only need to run the `npm start` command to start the react server.
+After installing once, you only need to run the `npm start` command to start the React server.
 
 The instance will be running at http://localhost:3000/ and code changes should update the running code automatically when saving.
 
@@ -149,4 +148,3 @@ The instance will be running at http://localhost:3000/ and code changes should u
 ## Assumptions
 
 - The .env file is assumed to be an external file, and would not be part of this repository for a real project. Having passwords in a file on the hosted repository is considered a security risk.
--->
