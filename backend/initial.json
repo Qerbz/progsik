@@ -1,0 +1,37 @@
+[
+    {
+        "model": "fields.field",
+        "pk": 1,
+        "fields": {
+            "name": "Field 1: Lerkendal"
+        }
+    },
+    {
+        "model": "fields.field",
+        "pk": 2,
+        "fields": {
+            "name": "Field 2: Ullevål"
+        }
+    },
+    {
+        "model": "fields.field",
+        "pk": 3,
+        "fields": {
+            "name": "Field 3: Aker Stadion"
+        }
+    },
+    {
+        "model": "fields.field",
+        "pk": 4,
+        "fields": {
+            "name": "Field 4: Brann Stadion"
+        }
+    },
+    {
+        "model": "fields.field",
+        "pk": 5,
+        "fields": {
+            "name": "Field 5: Romssa Arena"
+        }
+    }
+]
