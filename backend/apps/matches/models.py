@@ -1,7 +1,7 @@
-from django.db import models
+from django.apps import apps
 from apps.teams.models import Team
 from apps.fields.models import Booking
-from apps.consent_requests.models import ConsentRequest
+from django.db import models
 
 
 class Match(models.Model):
@@ -19,7 +19,10 @@ class Match(models.Model):
         super().save(*args, **kwargs)
 
         if is_new:
+            ConsentRequest = apps.get_model(
+                'consent_requests', 'ConsentRequest')
             for team in [self.team1, self.team2]:
                 for user in team.members.all():
                     if (user.user_type == "player"):
-                        ConsentRequest.objects.create(user=user, match=self)
+                        ConsentRequest.objects.create(
+                            user=user, match=self)

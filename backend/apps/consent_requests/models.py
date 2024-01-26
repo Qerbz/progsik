@@ -1,12 +1,13 @@
 from django.db import models
 from apps.users.models import User
+from apps.matches.models import Match
 
 
 class ConsentRequest(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='consent_requests')
     match = models.ForeignKey(
-        'matches.Match',
+        Match,
         on_delete=models.CASCADE,
         related_name='consent_requests'
     )
