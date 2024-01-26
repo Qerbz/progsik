@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404
+from django.db import transaction
+from django.apps import apps
 from django.utils.dateparse import parse_datetime
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
@@ -53,27 +55,45 @@ class CreateMatchView(APIView):
         if bookings.exists():
             return Response({'error': 'Field is not available during the requested time period'}, status=status.HTTP_400_BAD_REQUEST)
 
-        new_booking = Booking.objects.create(
-            field=field,
-            start_time=start_time_utc,
-            end_time=end_time_utc
-        )
-
         team1 = get_object_or_404(Team, pk=team1_id)
         team2 = get_object_or_404(Team, pk=team2_id)
 
-        new_match = Match.objects.create(
-            team1=team1,
-            team2=team2,
-            date_time=start_time_utc,
-            description=description,
-            booking=new_booking
-        )
 
-        match_serializer = MatchSerializer(new_match)
+        try:
+            with transaction.atomic():
+                new_booking = Booking.objects.create(
+                  field=field,
+                  start_time=start_time_utc,
+                  end_time=end_time_utc
+                  )
 
-        return Response({
-            'message': 'Match and booking created successfully',
-            'booking_id': new_booking.id,
-            'match': match_serializer.data
-        }, status=status.HTTP_201_CREATED)
+                new_match = Match.objects.create(
+                   team1=team1,
+                   team2=team2,
+                   date_time=start_time_utc,
+                   description=description,
+                   booking=new_booking
+                   )
+
+                match_serializer = MatchSerializer(new_match)
+
+                ConsentRequest = apps.get_model(
+                                'consent_requests', 'ConsentRequest')
+                # Creating ConsentRequests
+                for team in [team1, team2]:
+                    for user in team.members.all():
+                        if user.user_type == "player":
+                            ConsentRequest.objects.create(
+                                user=user, match=new_match)
+
+                match_serializer = MatchSerializer(new_match)
+
+                return Response({
+                    'message': 'Match and booking created successfully',
+                    'booking_id': new_booking.id,
+                    'match': match_serializer.data
+                }, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            # Handle exception or rollback
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
