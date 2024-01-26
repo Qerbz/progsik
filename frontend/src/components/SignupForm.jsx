@@ -62,7 +62,7 @@ const SignupForm = () => {
 
   useEffect(() => {
     const age = calculateAge(birthdate);
-    setShowGuardianField(age < 15 && userType == "player");
+    setShowGuardianField(age < 15 && userType === "player");
   }, [birthdate, userType]);
 
   const handleChangeUserType = (event) => {

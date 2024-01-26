@@ -88,7 +88,7 @@ const LoginForm = ({ setUser, setAppSnackbarOpen, setAppSnackbarText }) => {
         setUsername("");
         setPassword("");
         setUser(response.user);
-        if (response.user.user_type == "manager") {
+        if (response.user.user_type === "manager") {
           if (response.user.team_id) {
             navigate("/matches");
           }
