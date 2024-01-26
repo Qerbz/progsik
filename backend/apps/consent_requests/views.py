@@ -57,10 +57,10 @@ class ApproveRequestView(generics.GenericAPIView):
 
             if (user.user_type == "guardian"):
                 consent_request = ConsentRequest.objects.get(
-                    id=rId, user__guardian=user)
+                    id=rId)
             else:
                 consent_request = ConsentRequest.objects.get(
-                    id=rId, user=user)
+                    id=rId)
 
             consent_request.request_status = "accepted"
             consent_request.save()
@@ -83,10 +83,10 @@ class RemoveApprovalView(generics.GenericAPIView):
             rId = pickle.loads(rId)
             if (user.user_type == "guardian"):
                 consent_request = ConsentRequest.objects.get(
-                    id=rId, user__guardian=user)
+                    id=rId)
             else:
                 consent_request = ConsentRequest.objects.get(
-                    id=rId, user=user)
+                    id=rId)
 
             consent_request.request_status = "declined"
             consent_request.save()
