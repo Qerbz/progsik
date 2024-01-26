@@ -16,6 +16,11 @@ const Matches = () => {
   const [upcomingMatches, setUpcomingMatches] = useState([]);
   const [finishedMatches, setFinishedMatches] = useState([]);
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   const fetchMatches = async () => {
     try {
       const matchesData = await MatchesService.GetMatches();
@@ -28,7 +33,7 @@ const Matches = () => {
         return {
           id: match.id,
           teams: `${match.team1.name} vs ${match.team2.name}`,
-          date: match.date_time,
+          date: formatDate(match.date_time),
           pending: pending,
           accepted: accepted,
           declined: declined,
@@ -46,7 +51,7 @@ const Matches = () => {
         return {
           id: match.id,
           teams: `${match.team1.name} vs ${match.team2.name}`,
-          date: match.date_time,
+          date: formatDate(match.date_time),
           pending: pending,
           accepted: accepted,
           declined: declined,
@@ -133,4 +138,3 @@ const Matches = () => {
 };
 
 export default Matches;
-
