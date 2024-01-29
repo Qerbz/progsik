@@ -122,15 +122,15 @@ const SignupForm = () => {
         setPassword("");
       })
       .catch((err) => {
-        let msg = "";
-        if (err.response) {
-          Object.values(err.response.data).forEach((x) => (msg += x));
-          console.log(err.response);
-        } else {
-          msg = "Failed to get response from server.";
+        let msg = "An error occurred during registration.";
+        let type = "error";
+
+        if (err.response && err.response.data) {
+          msg = Object.values(err.response.data).join(" ");
         }
+
         setSnackbarText(msg);
-        setSnackbarType("error");
+        setSnackbarType(type);
         setSnackbarOpen(true);
       });
   };

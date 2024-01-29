@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from django.db import transaction
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.settings import api_settings
 from django.contrib.auth.models import update_last_login
@@ -6,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions
 from django.core.mail import EmailMessage
+from smtplib import SMTPRecipientsRefused
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse_lazy
@@ -72,25 +75,24 @@ class RegisterSerializer(UserSerializer):
                   'team_id', 'birthdate', 'first_name', 'last_name', 'guardian_username']
 
     def create(self, validated_data):
-        user = get_user_model().objects.create_user(**validated_data)
+        with transaction.atomic():
+            user = get_user_model().objects.create_user(**validated_data, is_active=False)
+            email = validated_data["email"]
+            email_subject = "Activate your account"
+            uid = urlsafe_base64_encode(user.username.encode())
+            domain = get_current_site(self.context["request"])
+            link = reverse_lazy('verify-email', kwargs={"uid": uid})
+            url = f"{settings.PROTOCOL}://{domain}{link}"
+            mail = EmailMessage(email_subject, url, None, [email])
 
-        user.is_active = False
-        user.save()
+            try:
+                mail.send(fail_silently=False)
+            except SMTPRecipientsRefused:
+                # Rollback the transaction
+                transaction.set_rollback(True)
+                raise ValidationError({"email": "Invalid email address. Unable to send verification email."})
 
-        email = validated_data["email"]
-        email_subject = "Activate your account"
-        uid = urlsafe_base64_encode(user.username.encode())
-        domain = get_current_site(self.context["request"])
-        link = reverse_lazy('verify-email', kwargs={"uid": uid})
-        url = f"{settings.PROTOCOL}://{domain}{link}"
-        mail = EmailMessage(
-            email_subject,
-            url,
-            None,
-            [email],
-        )
-
-        mail.send(fail_silently=False)
+            user.save()
 
         return user
 
