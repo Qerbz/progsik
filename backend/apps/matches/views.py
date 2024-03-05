@@ -12,7 +12,7 @@ from .models import Match
 from .serializers import MatchSerializer
 from apps.fields.models import Booking, Field
 from apps.teams.models import Team
-from django.utils.timezone import make_aware, utc
+from django.utils import timezone
 import pytz
 
 
@@ -40,9 +40,9 @@ class CreateMatchView(APIView):
 
         user_timezone = pytz.timezone(user_timezone_str)
         start_time_naive = parse_datetime(date_time)
-        start_time_user_tz = make_aware(start_time_naive, user_timezone)
+        start_time_user_tz = timezone.make_aware(start_time_naive, user_timezone)
 
-        start_time_utc = start_time_user_tz.astimezone(utc)
+        start_time_utc = start_time_user_tz.astimezone(timezone.utc)
 
         end_time_utc = start_time_utc + timedelta(hours=1)
 
