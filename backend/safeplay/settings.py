@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+
 import os
 from pathlib import Path
 from datetime import timedelta
@@ -16,7 +17,7 @@ import os.path
 
 # The PRODUCTION variable decides how the static files are handeled in wsgi.py
 # The variable is set to 'True' (string) when running with docker
-PRODUCTION = os.getenv('PRODUCTION', False)
+PRODUCTION = os.getenv("PRODUCTION", False)
 
 # Get environment variables
 GROUP_ID = os.environ.get("GROUP_ID", "3000")
@@ -29,7 +30,7 @@ PROTOCOL = os.environ.get("PROTOCOL", "http")
 # URL in local development will not find environment variables and looks like: 'http://localhost:3000' (redirect to node)
 # URL in local production with docker can look like this: 'http://localhost:21190', where 190 is the GROUP_ID
 # URL in remote production with docker can look like this: 'http://molde.idi.ntnu.no:21190', where 190 is the GROUP_ID
-URL = PROTOCOL + '://' + DOMAIN + ':' + PORT_PREFIX + GROUP_ID
+URL = PROTOCOL + "://" + DOMAIN + ":" + PORT_PREFIX + GROUP_ID
 
 # Set the URL as trusted origin. It is required or the CSRF check in admin panel will fail.
 CSRF_TRUSTED_ORIGINS = [URL]
@@ -49,16 +50,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 AUTH_USER_MODEL = "users.User"
 
 
-SECRET_KEY = 'asdkjasdasd2-gmdf18+ep^k4d4)=uf%+1h$5(p5!l3-g24xb10^%5ycj9!dp37'
+SECRET_KEY = "asdkjasdasd2-gmdf18+ep^k4d4)=uf%+1h$5(p5!l3-g24xb10^%5ycj9!dp37"
 
 DEBUG = True
 
 ALLOWED_HOSTS = [
     # Hosts for local development
-    '127.0.0.1',
-    'localhost',
+    "127.0.0.1",
+    "localhost",
     # Hosts for production
-    'tdt4237.idi.ntnu.no',
+    "tdt4237.idi.ntnu.no",
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -72,63 +73,63 @@ CORS_ALLOWED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'corsheaders',
-    'rest_framework',
-    'rest_framework_simplejwt.token_blacklist',
-    'apps.users',
-    'apps.teams',
-    'apps.matches',
-    'apps.consent_requests',
-    'apps.fields',
-    'apps.objections',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "corsheaders",
+    "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
+    "apps.users",
+    "apps.teams",
+    "apps.matches",
+    "apps.consent_requests",
+    "apps.fields",
+    "apps.objections",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'safeplay.urls'
+ROOT_URLCONF = "safeplay.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'safeplay.wsgi.application'
+WSGI_APPLICATION = "safeplay.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -136,9 +137,9 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -147,11 +148,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # MEDIA FILES
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -161,28 +162,25 @@ MEDIA_URL = "/media/"
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 PASSWORD_RESET_TIMEOUT = 3600  # Token valid for one hour
 
 PASSWORD_HASHERS = [
-        'django.contrib.auth.hashers.UnsaltedSHA1PasswordHasher',
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    )
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
 }
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60000),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=70),
-    'ROTATE_REFRESH_TOKENS': True,
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60000),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=70),
+    "ROTATE_REFRESH_TOKENS": True,
 }
