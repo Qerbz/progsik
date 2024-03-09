@@ -14,7 +14,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.urls import reverse_lazy
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_bytes, force_str
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from rest_framework.decorators import action
 
 
@@ -104,11 +104,18 @@ class VerificationView(generics.GenericAPIView):
     def get(self, request, uid):
         verified_url = settings.URL + "/verified"
         invalid_url = settings.URL + "/invalid"
+        expired_url = settings.URL + "/expired"
 
         try:
             username = urlsafe_base64_decode(uid).decode()
             user = get_user_model().objects.filter(username=username).first()
+
+            # Check if the link has expired
+            if user.verify_email_timer and (datetime.now(timezone.utc) - user.verify_email_timer) > timedelta(minutes=10):
+                return redirect(expired_url)  # Redirect to expired link page if it is expired
+
             user.is_active = True
+            user.verify_email_timer = None  # Clear the timer after successful activation of account
             user.save()
             return redirect(verified_url)
 
@@ -116,6 +123,7 @@ class VerificationView(generics.GenericAPIView):
             pass
 
         return redirect(invalid_url)
+
 
 
 class PasswordResetEmailView(generics.GenericAPIView):
@@ -175,6 +183,10 @@ class ActivationLinkEmailView(generics.GenericAPIView):
                     [email],
                 )
                 mail.send(fail_silently=False)
+
+                # Set the verification-timer to the current time
+                user.verify_email_timer = datetime.now(timezone.utc)
+                user.save()
         return Response({'success': "If the user is not activated, you will shortly receive a link to reset your password."}, status=status.HTTP_200_OK)
 
 

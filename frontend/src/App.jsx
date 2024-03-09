@@ -21,6 +21,7 @@ import TeamCreation from "./components/TeamCreation";
 import PrivacyNotice from './components/PrivacyNotice';
 import Invalid from './components/Invalid';
 import AuthService from "./services/auth";
+import Expired from "./components/Expired";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
@@ -191,6 +192,7 @@ const App = () => {
                 }
               />
               <Route path='/verified' element={<Verified />} />
+              <Route path='/expired' element={<Expired/>} />
               <Route path='/new_password' element={<ResetPassword />} />
             </>
           )}
