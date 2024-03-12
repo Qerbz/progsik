@@ -1,3 +1,5 @@
+import api from "./api"
+
 const getLocalRefreshToken = () => {
   return localStorage.getItem("refresh_token");
 };
@@ -24,6 +26,7 @@ const setUser = (user) => {
 };
 
 const removeUser = () => {
+  api.post(`/logout/`, {refresh: localStorage.getItem("refresh_token")})
   localStorage.removeItem("user");
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
