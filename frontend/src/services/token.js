@@ -26,7 +26,7 @@ const setUser = (user) => {
 };
 
 const removeUser = () => {
-  api.post(`/logout/`, {refresh: localStorage.getItem("refresh_token")})
+  api.post(`/logout/`, {refresh: localStorage.getItem("refresh_token")});
   localStorage.removeItem("user");
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
