@@ -16,6 +16,8 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_bytes, force_str
 from datetime import datetime, timedelta, timezone
 from rest_framework.decorators import action
+from django.core.cache import cache
+from django.contrib.auth.signals import user_logged_in
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -69,20 +71,50 @@ class RegistrationViewSet(viewsets.ModelViewSet, TokenObtainPairView):
         }, status=status.HTTP_201_CREATED)
 
 
+
 class LoginViewSet(viewsets.ModelViewSet, TokenObtainPairView):
     serializer_class = LoginSerializer
     permission_classes = (AllowAny,)
     http_method_names = ['post']
 
+
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+            username = request.data.get('username', None)
+            login_attempts_cache_key = f'login_attempts_{username}'
+            MAX_LOGIN_ATTEMPTS = 3
+            COOLDOWN_TIME = 10 * 60  # 10 minutes
 
-        try:
-            serializer.is_valid(raise_exception=True)
-        except TokenError as e:
-            raise InvalidToken(e.args[0])
+            # Check the cache for failed login attempts
+            failed_attempts = cache.get(login_attempts_cache_key, 0)
+            
+            if failed_attempts >= MAX_LOGIN_ATTEMPTS:
+                # Return a response indicating the account is locked
+                return Response(
+                    {'error': 'Too many failed login attempts, please try again later.'},
+                    status=status.HTTP_429_TOO_MANY_REQUESTS
+                )
 
-        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+            serializer = self.get_serializer(data=request.data)
+            
+            try:
+                serializer.is_valid(raise_exception=True)
+                
+            except Exception as e:
+                # Increment the failed login attempts in the cache
+                cache.set(login_attempts_cache_key, failed_attempts + 1, COOLDOWN_TIME)
+                raise InvalidToken(e.args[0])
+            # Reset the login attempts on successful login
+            cache.delete(login_attempts_cache_key)
+            
+            return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+
+# Signal receiver to reset login attempts on successful login
+def reset_login_attempts(sender, user, request, **kwargs):
+    login_attempts_cache_key = f'login_attempts_{user.username}'
+    cache.delete(login_attempts_cache_key)
+
+user_logged_in.connect(reset_login_attempts)
 
 
 class RefreshViewSet(viewsets.ViewSet, TokenRefreshView):
