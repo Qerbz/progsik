@@ -45,7 +45,7 @@ services:
       context: nginx/
       dockerfile: Dockerfile
     ports:
-      - ${PORT_PREFIX}${GROUP_ID}:80
+      - ${PORT_PREFIX}${GROUP_ID}:443
     environment:
       - GROUP_ID=${GROUP_ID}
       - PORT_PREFIX=${PORT_PREFIX}
