@@ -120,7 +120,7 @@ const ConsentRequestCard = ({ consentRequest, update, OpenSnackbar }) => {
         </Typography>
 
         <Typography component="div" variant='body2' color="text.secondary" gutterBottom>
-          <div dangerouslySetInnerHTML={{ __html: `Description: ${consentRequest.match.description}`}}></div>
+          {consentRequest.match.description}
         </Typography>
 
         <Stack direction="row" alignItems="center" spacing={1}>
