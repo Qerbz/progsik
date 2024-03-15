@@ -62,8 +62,8 @@ class ApproveRequestView(generics.GenericAPIView):
                 consent_request = ConsentRequest.objects.get(
                     id=rId)
 
-            if not (consent_request.user == user):
-                return Response({"error": f"This user is not authorized to approve this request", "error_code": "not_authorized"}, status=403)
+            # if not (consent_request.user == user):
+            #     return Response({"error": f"This user is not authorized to approve this request", "error_code": "not_authorized"}, status=403)
 
             consent_request.request_status = "accepted"
             consent_request.save()
@@ -91,10 +91,10 @@ class RemoveApprovalView(generics.GenericAPIView):
                 consent_request = ConsentRequest.objects.get(
                     id=rId)
 
-            if not (consent_request.user == user):
-                return Response(
-                    {"error": f"This user is not authorized to approve this request", "error_code": "not_authorized"},
-                    status=403)
+            # if not (consent_request.user == user):
+            #     return Response(
+            #         {"error": f"This user is not authorized to approve this request", "error_code": "not_authorized"},
+            #         status=403)
 
             consent_request.request_status = "declined"
             consent_request.save()
